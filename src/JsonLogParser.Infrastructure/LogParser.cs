@@ -14,8 +14,23 @@ namespace JsonLogParser.Infrastructure
         public void ReadLogs() {
             string line;
             while((line = _consoleHandler.ReadConsole()) != null) {                
-                var log = JsonSerializer.Deserialize<Log>(line);
-                _consoleHandler.WriteConsole(log.GetFormattedLog());
+                var log = DeserializeLog(line);
+
+                if (log != null)
+                    _consoleHandler.WriteConsole(log.GetFormattedLog());
+            }
+        }
+
+        private Log DeserializeLog(string line)
+        {
+            try
+            {
+                return JsonSerializer.Deserialize<Log>(line);
+            }
+            catch (JsonException je)
+            {
+                _consoleHandler.WriteConsole($@"Json could not be parsed. Message {je.Message}");
+                return null;
             }
         }
     }
