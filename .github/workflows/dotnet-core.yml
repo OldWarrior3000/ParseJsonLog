@@ -26,7 +26,7 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - name: Publish
-      run: dotnet publish --configuration Release --no-build --output ${{ env.CLI_PATH }}
+      run: dotnet publish src/JsonLogParser/JsonLogParser.csproj --configuration Release --no-build --output ${{ env.CLI_PATH }} -r linux-x64  --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true
       
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
