@@ -1,5 +1,7 @@
 using System.Text;
 using FluentAssertions;
+using JsonLogParser.Infrastructure.Configuration;
+using Microsoft.Extensions.Options;
 using Xunit;
 using Moq;
 using Xunit.Abstractions;
@@ -25,7 +27,8 @@ namespace JsonLogParser.Infrastructure.Tests
             consoleMock.SetupSequence(x => x.ReadConsole()).Returns(logOutput);
             consoleMock.Setup(x => x.WriteConsole(It.IsAny<string>()))
                 .Callback((string x) => sb.Append(x));
-            var logParser = new LogParser(consoleMock.Object);
+            var logConfiguration = new LogConfiguration() {LogSource = LogSource.Bps};
+            var logParser = new LogParser(consoleMock.Object, new LogFormatMapper(), Options.Create(logConfiguration));
 
             logParser.ReadLogs();
 

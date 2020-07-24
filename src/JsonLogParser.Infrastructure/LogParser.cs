@@ -1,14 +1,24 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
+using JsonLogParser.Infrastructure.Configuration;
+using JsonLogParser.Infrastructure.Dao;
+using JsonLogParser.Infrastructure.Dto;
+using Microsoft.Extensions.Options;
 
 namespace JsonLogParser.Infrastructure
 {
     public class LogParser
     {
         public readonly IConsoleHandler _consoleHandler;
-        
-        public LogParser(IConsoleHandler consoleHandler)
+        private readonly ILogFormatMapper _logFormatMapper;
+        private readonly IOptions<LogConfiguration> _logConfiguration;
+
+        public LogParser(IConsoleHandler consoleHandler, ILogFormatMapper logFormatMapper, 
+            IOptions<LogConfiguration> logConfiguration)
         {
             _consoleHandler = consoleHandler;
+            _logFormatMapper = logFormatMapper;
+            _logConfiguration = logConfiguration;
         }
 
         public void ReadLogs() {
@@ -21,11 +31,25 @@ namespace JsonLogParser.Infrastructure
             }
         }
 
-        private Log DeserializeLog(string line)
+        private LogFormat DeserializeLog(string line)
         {
             try
             {
-                return JsonSerializer.Deserialize<Log>(line);
+                switch (_logConfiguration.Value.LogSource)
+                {
+                    case LogSource.Bps:
+                    {
+                        var log = JsonSerializer.Deserialize<BpsLogFormat>(line);
+                        return _logFormatMapper.ConvertFromBpsLogFormat(log);
+                    }
+                    case LogSource.Bpe:
+                    {
+                        var log = JsonSerializer.Deserialize<BpeLogFormat>(line);
+                        return _logFormatMapper.ConvertFromBpeLogFormat(log);
+                    }
+                    default:
+                        throw new NotImplementedException($"LogSource {_logConfiguration.Value.LogSource} is not supported");
+                }
             }
             catch (JsonException je)
             {
