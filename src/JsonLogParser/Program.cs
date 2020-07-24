@@ -16,7 +16,7 @@ namespace JsonLogParser
             var rootCommand = new RootCommand()
             {
                 new Option<LogSource>(
-                    "Source", 
+                    "--source", 
                     description: "Source of the logs", 
                     getDefaultValue: () => LogSource.Bps)
             };

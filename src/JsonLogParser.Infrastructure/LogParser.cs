@@ -9,16 +9,18 @@ namespace JsonLogParser.Infrastructure
 {
     public class LogParser
     {
-        public readonly IConsoleHandler _consoleHandler;
+        private readonly IConsoleHandler _consoleHandler;
         private readonly ILogFormatMapper _logFormatMapper;
-        private readonly IOptions<LogConfiguration> _logConfiguration;
+        private readonly LogConfiguration _logConfiguration;
 
         public LogParser(IConsoleHandler consoleHandler, ILogFormatMapper logFormatMapper, 
             IOptions<LogConfiguration> logConfiguration)
         {
             _consoleHandler = consoleHandler;
             _logFormatMapper = logFormatMapper;
-            _logConfiguration = logConfiguration;
+            _logConfiguration = logConfiguration.Value;
+
+            Console.WriteLine($"LogConfiguration {_logConfiguration}");
         }
 
         public void ReadLogs() {
@@ -35,7 +37,7 @@ namespace JsonLogParser.Infrastructure
         {
             try
             {
-                switch (_logConfiguration.Value.LogSource)
+                switch (_logConfiguration.LogSource)
                 {
                     case LogSource.Bps:
                     {
@@ -48,7 +50,7 @@ namespace JsonLogParser.Infrastructure
                         return _logFormatMapper.ConvertFromBpeLogFormat(log);
                     }
                     default:
-                        throw new NotImplementedException($"LogSource {_logConfiguration.Value.LogSource} is not supported");
+                        throw new NotImplementedException($"LogSource {_logConfiguration.LogSource} is not supported");
                 }
             }
             catch (JsonException je)
