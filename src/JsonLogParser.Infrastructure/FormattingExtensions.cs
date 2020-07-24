@@ -1,4 +1,5 @@
 using System.Text;
+using JsonLogParser.Infrastructure.Dto;
 
 namespace JsonLogParser.Infrastructure
 {
@@ -6,14 +7,16 @@ namespace JsonLogParser.Infrastructure
     {
         private static readonly string Separator = " ";
 
-        public static string GetFormattedLog(this Log log) {
+        public static string GetFormattedLog(this LogFormat bpsLogFormat) {
             var sb = new StringBuilder();
 
-            AddProperty(log.TimeStamp, nameof(Log.TimeStamp), ref sb);
+            AddProperty(bpsLogFormat.TimeStamp, nameof(LogFormat.TimeStamp), ref sb);
             AddSeparator(ref sb);
-            AddProperty(log.Level, nameof(Log.Level), ref sb);
-            AddProperty(log.Message, nameof(Log.Message), ref sb);
-            AddProperty(log.EventId, nameof(Log.EventId), ref sb, true);
+            AddProperty(bpsLogFormat.Level, nameof(LogFormat.Level), ref sb);
+            AddSeparator(ref sb);
+            AddProperty(bpsLogFormat.Message, nameof(LogFormat.Message), ref sb);
+            AddSeparator(ref sb);
+            AddProperty(bpsLogFormat.EventId, nameof(LogFormat.EventId), ref sb, true);
             return sb.ToString();
         }
 

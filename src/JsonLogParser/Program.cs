@@ -1,4 +1,9 @@
-﻿using JsonLogParser.Infrastructure;
+﻿using System;
+using System.CommandLine;
+using System.CommandLine.Invocation;
+using JsonLogParser.Infrastructure;
+using JsonLogParser.Infrastructure.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace JsonLogParser
 {
@@ -8,6 +13,24 @@ namespace JsonLogParser
     {
         // ReSharper disable once UnusedParameter.Local
         static void Main(string[] args)
-            => new LogParser(new ConsoleHandler()).ReadLogs();
+        {
+            var rootCommand = new RootCommand();
+            rootCommand.AddOption(new Option<string>(
+                "--log-source", 
+                description: "Source of the logs",
+                getDefaultValue: () => "bps"
+                ));
+            rootCommand.Description = "Json Parser";
+            rootCommand.Handler = CommandHandler.Create<string>(StartProgram);
+            rootCommand.InvokeAsync(args).Wait();
+        }
+
+        private static void StartProgram(string logSource)
+        {
+            var source = (LogSource)Enum.Parse(typeof(LogSource), logSource,true);
+            var logConfiguration = new LogConfiguration() {LogSource = source};
+            new LogParser(new ConsoleHandler(), new LogFormatMapper(), Options.Create(logConfiguration))
+                .ReadLogs();
+        }
     }
 }

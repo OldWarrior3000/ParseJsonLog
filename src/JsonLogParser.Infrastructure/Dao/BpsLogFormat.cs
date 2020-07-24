@@ -1,10 +1,9 @@
 using System;
 using System.Text.Json.Serialization;
 
-namespace JsonLogParser.Infrastructure
+namespace JsonLogParser.Infrastructure.Dao
 {
-    public class Log {
-
+    public class BpsLogFormat {
         [JsonPropertyName("@t")]
         public DateTime TimeStamp { get; set; }
         [JsonPropertyName("@m")]
