@@ -19,8 +19,6 @@ namespace JsonLogParser.Infrastructure
             _consoleHandler = consoleHandler;
             _logFormatMapper = logFormatMapper;
             _logConfiguration = logConfiguration.Value;
-
-            Console.WriteLine($"LogConfiguration {_logConfiguration}");
         }
 
         public void ReadLogs() {

@@ -27,7 +27,6 @@ namespace JsonLogParser
 
         private static void StartProgram(string logSource)
         {
-            Console.WriteLine($"Value: {logSource}");
             var source = (LogSource)Enum.Parse(typeof(LogSource), logSource,true);
             var logConfiguration = new LogConfiguration() {LogSource = source};
             new LogParser(new ConsoleHandler(), new LogFormatMapper(), Options.Create(logConfiguration))
