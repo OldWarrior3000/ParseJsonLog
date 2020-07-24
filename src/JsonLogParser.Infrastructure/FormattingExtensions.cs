@@ -13,7 +13,9 @@ namespace JsonLogParser.Infrastructure
             AddProperty(bpsLogFormat.TimeStamp, nameof(LogFormat.TimeStamp), ref sb);
             AddSeparator(ref sb);
             AddProperty(bpsLogFormat.Level, nameof(LogFormat.Level), ref sb);
+            AddSeparator(ref sb);
             AddProperty(bpsLogFormat.Message, nameof(LogFormat.Message), ref sb);
+            AddSeparator(ref sb);
             AddProperty(bpsLogFormat.EventId, nameof(LogFormat.EventId), ref sb, true);
             return sb.ToString();
         }
